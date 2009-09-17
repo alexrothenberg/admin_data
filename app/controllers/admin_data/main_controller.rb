@@ -38,11 +38,11 @@ class AdminData::MainController  < AdminData::BaseController
       @records = has_many_proxy.send(  :paginate,
                                        :page => params[:page],
                                        :per_page => per_page,
-                                       :order => "#{@klass.table_name}.id desc")
+                                       :order => "#{@klass.table_name}.#{@klass.primary_key} desc")
     else
       @records = @klass.paginate( :page => params[:page],
                                   :per_page => per_page,
-                                  :order => "#{@klass.table_name}.id desc")
+                                  :order => "#{@klass.table_name}.#{@klass.primary_key} desc")
     end
   end
 
@@ -101,10 +101,9 @@ class AdminData::MainController  < AdminData::BaseController
   end
 
   def get_model_and_verify_it
-    @model = @klass.send(:find_by_id,params[:model_id])
-    if @model.blank?
-      render :text => "<h2>#{@klass.name} not found: #{params[:model_id]}</h2>", :status => 404 
-    end
+    @model = @klass.find(params[:model_id])
+  rescue ActiveRecord::RecordNotFound
+    render :text => "<h2>#{@klass.name} not found: #{params[:model_id]}</h2>", :status => 404 
   end
 
 end
