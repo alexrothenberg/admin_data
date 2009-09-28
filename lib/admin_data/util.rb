@@ -40,8 +40,19 @@ class AdminData::Util
     end
   end
 
+  def self.get_class_name_for_habtm_association(model,habtm_string)
+    model.class.reflections.values.detect {|reflection| reflection.name == habtm_string.to_sym}.klass
+  end
+  
   def self.has_many_count(model,send)
     model.send(send.intern).count
+  end
+  def self.habtm_count(model,send)
+    has_many_count(model, send)
+  end
+
+  def self.habtm_what(klass)
+    klass.name.camelize.constantize.reflections.values.select {|reflection| reflection.macro == :has_and_belongs_to_many}.map(&:name).map(&:to_s)
   end
 
   def self.has_many_what(klass)
@@ -70,9 +81,10 @@ class AdminData::Util
   end
 
   def self.admin_data_association_info_size(klass)
-    (belongs_to_what(klass).size > 0)  ||
-    (has_many_what(klass).size > 0) ||
-    (has_one_what(klass).size > 0)
+    (belongs_to_what(klass).size > 0) ||
+    (has_many_what(klass).size   > 0) ||
+    (has_one_what(klass).size    > 0) ||   
+    (habtm_what(klass).size      > 0)
   end
 
   def self.string_representation_of_data(value)

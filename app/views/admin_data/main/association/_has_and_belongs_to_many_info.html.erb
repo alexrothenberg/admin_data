@@ -1,0 +1,19 @@
+<% if AdminData::Util.habtm_what(klass).size > 0 %>
+  <p>
+    <strong>has_many :</strong>
+      <% AdminData::Util.habtm_what(klass).each do |hm| 
+          label = hm + '(' + AdminData::Util.habtm_count(model,hm).to_s + ')'
+      %>
+      <% if AdminData::Util.habtm_count(model,hm) > 0 %>
+        <%= link_to label, admin_data_on_model_index_path(
+                            :klass => AdminData::Util.get_class_name_for_habtm_association(model,hm), 
+                            :send => hm,
+                            :base => klass.name, 
+                            :model_id => model.id) %>        
+      <% else %>
+        <%= label %>      
+      <% end %>  
+      &nbsp;
+    <% end %>  
+  </p> 
+<% end %>  

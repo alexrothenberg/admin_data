@@ -32,7 +32,7 @@
     <tr>
       <% for column in @klass.columns %>
         <td>
-          <% if column == @klass.columns[0] %>
+          <% if column.name == @klass.primary_key && record.id %>
             <%= link_to(record.send(column.name), 
                         admin_data_show_path(:klass => @klass.name, :model_id => record.id)) %>
           <% else %>
