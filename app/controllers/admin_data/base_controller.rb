@@ -32,36 +32,36 @@ class AdminData::BaseController < ApplicationController
   end
 
   def build_klasses
-    @klasses = []
-    models = []
+    unless defined? @@klasses
+      @@klasses = []
+      models = []
 
-    model_dir = File.join(RAILS_ROOT,'app','models')
-    Dir.chdir(model_dir) { models = Dir["**/*.rb"] }
+      model_dir = File.join(RAILS_ROOT,'app','models')
+      Dir.chdir(model_dir) { models = Dir["**/*.rb"] }
 
-    models = models.sort
+      models = models.sort
 
-    models.each do |model|
-      class_name = model.sub(/\.rb$/,'').camelize
-      begin
-        # for models/foo/bar/baz.rb
-        klass = class_name.split('::').inject(Object){ |klass,part| klass.const_get(part) }
-      rescue Exception => e
-        Rails.logger.debug e.message
-      end
-      if klass && klass.ancestors.include?(ActiveRecord::Base)  && !@klasses.include?(klass)
-        # it is possible that a model doesn't have a corresponding table because 
-        # migration has not run or
-        # migration has deleted the table but the model has not been deleted.
-        #
-        # In order to remove such classes from the list sending count method to klass 
+      models.each do |model|
+        class_name = model.sub(/\.rb$/,'').camelize
         begin
-          klass.send(:count)
-          @klasses << klass
-        rescue ActiveRecord::StatementInvalid  => e
+          # for models/foo/bar/baz.rb
+          klass = class_name.split('::').inject(Object){ |klass,part| klass.const_get(part) }
+        rescue Exception => e
           Rails.logger.debug e.message
+        end
+        if klass && klass.ancestors.include?(ActiveRecord::Base)  && !@@klasses.include?(klass)
+          # it is possible that a model doesn't have a corresponding table because 
+          # migration has not run or
+          # migration has deleted the table but the model has not been deleted.
+          begin
+            @@klasses << klass if klass.table_exists?
+          rescue ActiveRecord::StatementInvalid  => e
+            Rails.logger.debug e.message
+          end
         end
       end
     end
+    @klasses = @@klasses
   end
 
   def build_drop_down_for_klasses
