@@ -6,11 +6,15 @@ class AdminData::MainController  < AdminData::BaseController
                 :only => [:destroy, :delete, :edit, :update, :create]
 
   before_filter :get_class_from_params,
-                :only => [ :table_structure, :list,:show,:destroy,:delete,
-                           :edit,:new,:update, :create]
+                :only => [ :table_structure, :index,:show,:destroy,:delete,
+                           :edit,:new,:update, :create]  
 
   before_filter :get_model_and_verify_it, :only => [:destroy, :delete, :edit, :update, :show]
   
+  def all_models
+    render
+  end
+
   def table_structure
     @indexes = []
     if (indexes = ActiveRecord::Base.connection.indexes(@klass.table_name)).any?
@@ -27,10 +31,6 @@ class AdminData::MainController  < AdminData::BaseController
   end
 
   def index
-    render
-  end
-
-  def list
     if params[:base]
       model= params[:base].camelize.constantize.find(params[:model_id])
       has_many_proxy = model.send(params[:send].intern)
@@ -40,6 +40,7 @@ class AdminData::MainController  < AdminData::BaseController
                                        :per_page => per_page,
                                        :order => "#{@klass.table_name}.#{@klass.primary_key} desc")
     else
+      Rails.logger.debug params.inspect
       @records = @klass.paginate( :page => params[:page],
                                   :per_page => per_page,
                                   :order => "#{@klass.table_name}.#{@klass.primary_key} desc")
@@ -51,15 +52,15 @@ class AdminData::MainController  < AdminData::BaseController
   end
 
   def destroy
-    @klass.send(:destroy, params[:model_id])
+    @klass.send(:destroy, params[:id])
     flash[:success] = 'Record was destroyed'
-    redirect_to admin_data_list_path(:klass => @klass.name)
+    redirect_to admin_data_on_model_index_path(:klass => @klass.name)
   end
 
   def delete
-    @klass.send(:delete, params[:model_id])
+    @klass.send(:delete, params[:id])
     flash[:success] = 'Record was deleted'
-    redirect_to admin_data_list_path(:klass => @klass.name)
+    redirect_to admin_data_on_model_index_path(:klass => @klass.name)
   end
 
   def edit
@@ -75,7 +76,7 @@ class AdminData::MainController  < AdminData::BaseController
     model_attrs = params[model_name_underscored]
     if @model.update_attributes(model_attrs)
       flash[:success] = "Record was updated"
-      redirect_to admin_data_show_path(:model_id => @model.id, :klass => @klass.name.underscore)
+      redirect_to admin_data_on_model_path(:id => @model.id, :klass => @klass.name.underscore)
     else
       render :action => 'edit'
     end
@@ -90,7 +91,7 @@ class AdminData::MainController  < AdminData::BaseController
       render :action => 'new'
     else
       flash[:success] = "Record was created"
-      redirect_to admin_data_show_path(:model_id => @model.id, :klass => @klass.name.underscore)
+      redirect_to admin_data_on_model_path(:id => @model.id, :klass => @klass.name.underscore)
     end
   end
 
@@ -101,9 +102,10 @@ class AdminData::MainController  < AdminData::BaseController
   end
 
   def get_model_and_verify_it
-    @model = @klass.find(params[:model_id])
+    @model = @klass.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render :text => "<h2>#{@klass.name} not found: #{params[:model_id]}</h2>", :status => 404 
+    render :text => "<h2>#{@klass.name} not found: #{params[:id]}</h2>", :status => 404 
   end
 
 end
+

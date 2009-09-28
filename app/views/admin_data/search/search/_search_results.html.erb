@@ -11,7 +11,7 @@
   <% if params[:base] %>
     <caption>
       <%= link_to params[:base] + ' ID ' + params[:model_id], 
-          {:action => 'show', :klass => params[:base], :model_id => params[:model_id]} %>
+           admin_data_on_model_path(:klass => params[:base], :id => params[:model_id]) %>
         has 
         <%= pluralize(@total_num_of_children,params[:klass].downcase)%>
     </caption>    
@@ -34,7 +34,7 @@
         <td>
           <% if column.name == @klass.primary_key && record.id %>
             <%= link_to(record.send(column.name), 
-                        admin_data_show_path(:klass => @klass.name, :model_id => record.id)) %>
+                        admin_data_on_model_path(:klass => @klass.name, :id => record.id)) %>
           <% else %>
             <%=h  admin_data_get_value_for_column(column,record) %>
           <% end %>  

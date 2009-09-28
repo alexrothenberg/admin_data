@@ -1,4 +1,3 @@
-
 === 0.0.6 2009-09-09
 
 * more tests for the plugin. Now 151 tests and 229 assertions

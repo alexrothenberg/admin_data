@@ -1,6 +1,6 @@
 <div id="header">
   <h1 style='float:left;'>
-    <%= link_to 'admin_data', admin_data_path %>
+    <%= link_to 'admin_data', admin_data_index_path %>
   </h1>
   <div id='model_drop_down' style='float:right;margin:10px;'>
     <select id='drop_down_value_klass' style='font-size:14px;' 
@@ -16,7 +16,7 @@
       <li class="first <%=admin_data_am_i_active(
                                                  ['main','index list show table_structure new create edit'],
                                                  ['search','advance_search'])%>">
-        <%= link_to 'Home', admin_data_path %>
+        <%= link_to 'Home', admin_data_index_path %>
       </li>
       <li class="<%=admin_data_am_i_active(['migration','index'])%>">
         <%= link_to 'Migration Information', admin_data_migration_information_path %>

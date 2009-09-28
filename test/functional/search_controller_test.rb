@@ -13,19 +13,21 @@ class AdminData::SearchControllerTest < ActionController::TestCase
     grant_read_only_access
   end
 
-  should_route :get, '/admin_data/quick_search',  :controller => 'admin_data/search',
-                                                  :action => :quick_search
+  should_route :get, '/admin_data/some_model/quick_search',   :controller => 'admin_data/search',
+                                                              :action     => :quick_search,
+                                                              :klass      => :some_model
 
-  should_route :get, '/admin_data/advance_search',:controller => 'admin_data/search',
-                                                  :action => :advance_search
+  should_route :get, '/admin_data/some_model/advance_search', :controller => 'admin_data/search',
+                                                              :action => :advance_search,
+                                                              :klass      => :some_model
 
-  context 'get quick_search with no klass param' do
-    setup do
-      get :quick_search
-    end
-    should_respond_with :redirect
-    should_redirect_to('admin_data root') {admin_data_url}
-  end
+  # context 'get quick_search with no klass param' do
+  #   setup do
+  #     get :quick_search
+  #   end
+  #   should_respond_with :redirect
+  #   should_redirect_to('admin_data root') {admin_data_url}
+  # end
 
   context 'get quick_search with no search param' do
     setup do
@@ -71,13 +73,13 @@ class AdminData::SearchControllerTest < ActionController::TestCase
     end
   end
   
-  context 'get advance_search with no klass param' do
-    setup do
-      get :advance_search
-    end
-    should_respond_with :redirect
-    should_redirect_to('admin_data root') {admin_data_url}
-  end
+  # context 'get advance_search with no klass param' do
+  #   setup do
+  #     get :advance_search
+  #   end
+  #   should_respond_with :redirect
+  #   should_redirect_to('admin_data root') {admin_data_url}
+  # end
 
   context 'get advance_search with klass param' do
     setup do

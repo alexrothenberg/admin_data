@@ -1,8 +1,8 @@
 <div id="main">
   <div class='breadcrum'>
-    <%= link_to 'Home',admin_data_path %>
+    <%= link_to 'Home',admin_data_index_path %>
     >
-    <%= link_to @klass, admin_data_list_path(:klass => @klass.name) %> 
+    <%= link_to @klass, admin_data_on_model_index_path(:klass => @klass.name) %> 
   </div>
 
   <p>
@@ -21,7 +21,7 @@
       <h2 class="title"></h2>
       <div class="inner">
         <h2>Create a new record</h2>
-        <%= form_tag({:action => 'create', :klass => @klass.name.underscore}, {:class => 'nice_form'}) %>
+        <%= form_tag(new_admin_data_on_model_path(:klass => @klass.name.underscore), {:class => 'nice_form'}) %>
           <%= render :partial => 'admin_data/main/misc/form' %>
         </form>
       </div>

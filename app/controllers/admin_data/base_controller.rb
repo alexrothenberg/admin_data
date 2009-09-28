@@ -20,14 +20,15 @@ class AdminData::BaseController < ApplicationController
   end
 
   def get_class_from_params
+    Rails.logger.debug "get class from params"
     begin
       @klass = params[:klass].camelize.constantize
     rescue TypeError => e # in case no params[:klass] is supplied
       Rails.logger.debug 'no params[:klass] was supplied'
-      redirect_to admin_data_path
+      redirect_to admin_data_index_path
     rescue NameError # in case wrong params[:klass] is supplied
       Rails.logger.debug 'wrong params[:klass] was supplied'
-      redirect_to admin_data_path
+      redirect_to admin_data_index_path
     end
   end
 
@@ -66,7 +67,7 @@ class AdminData::BaseController < ApplicationController
 
   def build_drop_down_for_klasses
     @drop_down_for_klasses = @klasses.inject([]) do |result,klass|
-      result << [klass.name,  admin_data_list_url(:klass => klass.name)]
+      result << [klass.name,  admin_data_on_model_index_url(:klass => klass.name)]
     end
   end
 

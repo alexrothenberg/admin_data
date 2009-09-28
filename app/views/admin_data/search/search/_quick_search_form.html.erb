@@ -1,6 +1,5 @@
 <br />
-<%=form_tag('/admin_data/quick_search',:method => 'get', :id => 'search',:style=>'margin:5px;padding:5px;')%>   
-  <input type="hidden" name="klass" value="<%=@klass.to_s%>" />     
+<%=form_tag(admin_data_search_on_model_path(:klass=>@klass),:method => 'get', :id => 'search',:style=>'margin:5px;padding:5px;')%>   
   <div class='search_box'>
       <div id='quick_search'>
         <input type="text" id="quick_search_input" name="query" value="<%=params[:query]%>"/>
