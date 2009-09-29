@@ -125,6 +125,9 @@ class AdminData::MainControllerTest < ActionController::TestCase
                  :attributes => {:class => 'page_info'}, 
                  :descendant => {:tag => 'b', :child => /all 2/})
     end
+    should 'have counted 2 doors through has_many' do
+      assert_equal 2, assigns(:total_num_of_children)
+    end
   end
 
   context 'get show for article' do

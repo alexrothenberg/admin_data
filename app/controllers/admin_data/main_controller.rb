@@ -34,7 +34,7 @@ class AdminData::MainController  < AdminData::BaseController
     if params[:base]
       model= params[:base].camelize.constantize.find(params[:model_id])
       has_many_proxy = model.send(params[:send].intern)
-      @total_num_of_childrenre = has_many_proxy.send(:count)
+      @total_num_of_children = has_many_proxy.send(:count)
       @records = has_many_proxy.send(  :paginate,
                                        :page => params[:page],
                                        :per_page => per_page,
